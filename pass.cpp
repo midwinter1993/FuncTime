@@ -93,9 +93,15 @@ bool Instrument::runOnModule(Module &M) {
                         CallInst *call_after =
                             CallInst::Create(after_fun, args);
 
+#if (__clang_minor__ == 4)
                         blk->getInstList().insert(i, cast_inst);
                         blk->getInstList().insert(i, call_before);
                         blk->getInstList().insertAfter(i, call_after);
+#elif (__clang_minor__ == 8)
+                        blk->getInstList().insert(i->getIterator(), cast_inst);
+                        blk->getInstList().insert(i->getIterator(), call_before);
+                        blk->getInstList().insertAfter(i->getIterator(), call_after);
+#endif
                         ++ist;
 
                         DEBUG(errs() << (unsigned)fun; errs() << "Call: ";
